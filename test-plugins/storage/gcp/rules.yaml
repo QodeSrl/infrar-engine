@@ -1,0 +1,103 @@
+operations:
+  - name: upload
+    pattern: "infrar.storage.upload"
+    target:
+      provider: gcp
+      service: cloud_storage
+      operation: upload_from_filename
+
+    transformation:
+      imports:
+        - "from google.cloud import storage"
+
+      setup_code: "storage_client = storage.Client()"
+
+      code_template: |
+        bucket = storage_client.bucket({{ .bucket }})
+        blob = bucket.blob({{ .destination }})
+        blob.upload_from_filename({{ .source }})
+
+      parameter_mapping:
+        bucket: bucket
+        source: source
+        destination: destination
+
+    requirements:
+      - package: google-cloud-storage
+        version: ">=2.10.0"
+
+  - name: download
+    pattern: "infrar.storage.download"
+    target:
+      provider: gcp
+      service: cloud_storage
+      operation: download_to_filename
+
+    transformation:
+      imports:
+        - "from google.cloud import storage"
+
+      setup_code: "storage_client = storage.Client()"
+
+      code_template: |
+        bucket = storage_client.bucket({{ .bucket }})
+        blob = bucket.blob({{ .source }})
+        blob.download_to_filename({{ .destination }})
+
+      parameter_mapping:
+        bucket: bucket
+        source: source
+        destination: destination
+
+    requirements:
+      - package: google-cloud-storage
+        version: ">=2.10.0"
+
+  - name: delete
+    pattern: "infrar.storage.delete"
+    target:
+      provider: gcp
+      service: cloud_storage
+      operation: delete
+
+    transformation:
+      imports:
+        - "from google.cloud import storage"
+
+      setup_code: "storage_client = storage.Client()"
+
+      code_template: |
+        bucket = storage_client.bucket({{ .bucket }})
+        blob = bucket.blob({{ .path }})
+        blob.delete()
+
+      parameter_mapping:
+        bucket: bucket
+        path: path
+
+    requirements:
+      - package: google-cloud-storage
+        version: ">=2.10.0"
+
+  - name: list_objects
+    pattern: "infrar.storage.list_objects"
+    target:
+      provider: gcp
+      service: cloud_storage
+      operation: list_blobs
+
+    transformation:
+      imports:
+        - "from google.cloud import storage"
+
+      setup_code: "storage_client = storage.Client()"
+
+      code_template: "storage_client.list_blobs({{ .bucket }}, prefix={{ .prefix }})"
+
+      parameter_mapping:
+        bucket: bucket
+        prefix: prefix
+
+    requirements:
+      - package: google-cloud-storage
+        version: ">=2.10.0"

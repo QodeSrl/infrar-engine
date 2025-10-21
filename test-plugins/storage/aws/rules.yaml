@@ -1,0 +1,94 @@
+operations:
+  - name: upload
+    pattern: "infrar.storage.upload"
+    target:
+      provider: aws
+      service: s3
+      operation: upload_file
+
+    transformation:
+      imports:
+        - "import boto3"
+
+      setup_code: "s3 = boto3.client('s3')"
+
+      code_template: "s3.upload_file({{ .source }}, {{ .bucket }}, {{ .destination }})"
+
+      parameter_mapping:
+        bucket: bucket
+        source: source
+        destination: destination
+
+    requirements:
+      - package: boto3
+        version: ">=1.28.0"
+
+  - name: download
+    pattern: "infrar.storage.download"
+    target:
+      provider: aws
+      service: s3
+      operation: download_file
+
+    transformation:
+      imports:
+        - "import boto3"
+
+      setup_code: "s3 = boto3.client('s3')"
+
+      code_template: "s3.download_file({{ .bucket }}, {{ .source }}, {{ .destination }})"
+
+      parameter_mapping:
+        bucket: bucket
+        source: source
+        destination: destination
+
+    requirements:
+      - package: boto3
+        version: ">=1.28.0"
+
+  - name: delete
+    pattern: "infrar.storage.delete"
+    target:
+      provider: aws
+      service: s3
+      operation: delete_object
+
+    transformation:
+      imports:
+        - "import boto3"
+
+      setup_code: "s3 = boto3.client('s3')"
+
+      code_template: "s3.delete_object(Bucket={{ .bucket }}, Key={{ .path }})"
+
+      parameter_mapping:
+        bucket: bucket
+        path: path
+
+    requirements:
+      - package: boto3
+        version: ">=1.28.0"
+
+  - name: list_objects
+    pattern: "infrar.storage.list_objects"
+    target:
+      provider: aws
+      service: s3
+      operation: list_objects_v2
+
+    transformation:
+      imports:
+        - "import boto3"
+
+      setup_code: "s3 = boto3.client('s3')"
+
+      code_template: "s3.list_objects_v2(Bucket={{ .bucket }}, Prefix={{ .prefix }})"
+
+      parameter_mapping:
+        bucket: bucket
+        prefix: prefix
+
+    requirements:
+      - package: boto3
+        version: ">=1.28.0"

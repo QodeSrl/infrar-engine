@@ -1,7 +1,7 @@
 # Infrar Engine
 
 **Version**: 1.0.0 (MVP)
-**License**: Apache 2.0
+**License**: GPL v3
 **Language**: Go 1.21+
 
 The core transformation engine for Infrar - converts provider-agnostic code (Infrar SDK) into native cloud provider SDK code at deployment time, enabling true multi-cloud portability with **zero runtime overhead**.
@@ -356,7 +356,7 @@ Target performance metrics (MVP):
 
 ## 📝 License
 
-Apache License 2.0 - see [LICENSE](LICENSE) file for details.
+GNU General Public License v3.0 - see [LICENSE](LICENSE) file for details.
 
 ## 📧 Support
 

@@ -3,7 +3,7 @@
 **Version**: 1.0.0
 **Status**: Phase 1 - MVP Development
 **Language**: Go
-**License**: Apache 2.0
+**License**: GPL v3
 
 ## Overview
 

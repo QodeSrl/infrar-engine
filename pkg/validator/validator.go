@@ -18,12 +18,9 @@ type Validator struct {
 // NewValidator creates a new code validator
 func NewValidator() (*Validator, error) {
 	// Find Python executable
-	pythonExec := "python3"
-	if err := util.CheckCommandExists(pythonExec); err != nil {
-		pythonExec = "python"
-		if err := util.CheckCommandExists(pythonExec); err != nil {
-			return nil, fmt.Errorf("no Python executable found")
-		}
+	pythonExec, err := util.FindPythonExecutable()
+	if err != nil {
+		return nil, fmt.Errorf("failed to find Python executable: %w", err)
 	}
 
 	return &Validator{
@@ -43,7 +40,7 @@ func (v *Validator) ValidatePython(code string) error {
 	defer cancel()
 
 	// Use Python's compile function to check syntax
-	pythonCode := fmt.Sprintf(`
+	pythonCode := `
 import sys
 try:
     compile(sys.stdin.read(), '<string>', 'exec')
@@ -51,7 +48,7 @@ try:
 except SyntaxError as e:
     print(f"SyntaxError: {e}", file=sys.stderr)
     sys.exit(1)
-`)
+`
 
 	stdout, stderr, err := util.ExecuteCommandWithStdin(
 		ctx,

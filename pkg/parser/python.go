@@ -45,7 +45,7 @@ type pythonError struct {
 // NewPythonParser creates a new Python parser
 func NewPythonParser() (*PythonParser, error) {
 	// Find Python executable
-	pythonExec, err := findPythonExecutable()
+	pythonExec, err := util.FindPythonExecutable()
 	if err != nil {
 		return nil, fmt.Errorf("failed to find Python executable: %w", err)
 	}
@@ -151,18 +151,4 @@ func (p *PythonParser) ParseFile(filepath string) (*types.AST, error) {
 // Language implements the Parser interface
 func (p *PythonParser) Language() types.Language {
 	return types.LanguagePython
-}
-
-// findPythonExecutable finds a suitable Python executable
-func findPythonExecutable() (string, error) {
-	// Try python3 first, then python
-	candidates := []string{"python3", "python"}
-
-	for _, candidate := range candidates {
-		if err := util.CheckCommandExists(candidate); err == nil {
-			return candidate, nil
-		}
-	}
-
-	return "", fmt.Errorf("no Python executable found (tried: %v)", candidates)
 }
